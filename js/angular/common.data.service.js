@@ -7,8 +7,8 @@ function CommonDataService($log, api, $q, jsonapi_parser) {
 	var self = this;
 
     self.getUserSchema = function(study) {
-        return api.apiCall("schemas/admin/users", 'GET');
-    };
+        return api.apiCall('admin/users', 'POST', {'get_schema': true});
+    }
 
     self.getUsers = function() {
         var out = api.apiCall('admin/users', 'GET')
