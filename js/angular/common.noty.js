@@ -19,9 +19,10 @@ function NotyService() {
 			if (response.errors)
 				return self.showAll(response.errors, type);
 		if (response)
-			if (response.Response)
-				if (response.Response.errors)
-					return self.showAll(response.Response.errors, type);
+			if (response.data)
+				if (response.data.Response)
+					if (response.data.Response.errors)
+						return self.showAll(response.data.Response.errors, type);
 
 	}
 	self.showAll = function(messages, type) {
