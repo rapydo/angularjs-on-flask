@@ -233,7 +233,7 @@ function RegisterController($scope, $log, $auth, api, noty)
     }
 }
 
-function RecoverController($scope, $log, $auth, $stateParams, api, noty)
+function RecoverController($scope, $state, $log, $auth, $stateParams, api, noty)
 {
     // Init controller
     var self = this;
@@ -264,7 +264,31 @@ function RecoverController($scope, $log, $auth, $stateParams, api, noty)
 
 
     }
-    $log.debug("Recover Controller");
+    self.changePassword = function() {
+
+        if (self.newPwd != self.confirmPwd) {
+            noty.showError("New password does not match with confirmation");
+            return false;
+        }
+
+        var data = {}
+        data["new_password"] = self.newPwd;
+        data["password_confirm"] = self.confirmPwd;
+
+        api.apiCall(api.endpoints.recover, 'PUT', data, self.token).then(
+            function(out_data) {
+                self.newPwd = ""
+                self.confirmPwd = ""
+                noty.showSuccess("Password successfully changed. Please login with your new password")
+                $state.go("public.login");
+                return true;
+            },
+            function(out_data) {
+                noty.extractErrors(out_data, noty.ERROR);
+                return false;
+            }
+        );
+    };
 
 
     // Init the model
