@@ -233,8 +233,8 @@ function RegisterController($scope, $log, $auth, api, noty)
     }
 }
 
-function RecoverController($scope, $state, $log, $auth, $stateParams, api, noty)
-{
+function RecoverController(
+    $scope, $timeout, $state, $log, $auth, $stateParams, api, noty) {
     // Init controller
     var self = this;
 
@@ -245,6 +245,8 @@ function RecoverController($scope, $state, $log, $auth, $stateParams, api, noty)
             $log.debug("Already logged");
             $state.go(loggedLandingPage);
         });
+
+        return
     }
 
     var token = $stateParams.token;
