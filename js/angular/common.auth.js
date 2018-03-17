@@ -6,6 +6,7 @@ angular.module('web')
 .controller('LoginController', LoginController)
 .controller('RegisterController', RegisterController)
 .controller('LogoutController', LogoutController)
+.controller('RecoverController', RecoverController)
 
 .config(function($authProvider) {
 
@@ -43,6 +44,7 @@ function LoginController($scope, $log, $window,
         self.askTOTP = false;
         // allowRegistration is defined in common.globals.js and overriding in routing.extra.js
         self.allowRegistration = allowRegistration;
+        self.allowPasswordRecovery = allowPasswordRecovery;
         self.userMessage = null;
         self.qr_code = null;
 
@@ -231,6 +233,60 @@ function RegisterController($scope, $log, $auth, api, noty)
     }
 }
 
+function RecoverController($scope, $log, $auth, $stateParams, api, noty)
+{
+    // Init controller
+    var self = this;
+
+    // Skip if already logged
+    if ($auth.isAuthenticated())
+    {
+        $timeout(function () {
+            $log.debug("Already logged");
+            $state.go(loggedLandingPage);
+        });
+    }
+
+    var token = $stateParams.token;
+
+    if (token) {
+
+        api.apiCall(api.endpoints.recover, 'PUT', null, token).then(
+            function(response) {
+                self.token = token
+                noty.extractErrors(response, noty.WARNING);
+            },
+            function(out_data) {
+                self.token = undefined
+                self.invalid_token = out_data.errors[0];
+            }
+        );
+
+
+    }
+    $log.debug("Recover Controller");
+
+
+    // Init the model
+    self.recover_email = null;
+
+    self.request = function()
+    {
+        if (self.recover_email == null)
+            return false;
+
+        $log.debug("Requested recover:", self.recover_email);
+        var data = {"recover_email": self.recover_email};
+        api.apiCall(api.endpoints.recover, 'POST', data).then(
+            function(response) {
+                noty.extractErrors(response, noty.WARNING);
+            },
+            function(out_data) {
+                noty.extractErrors(out_data, noty.ERROR);
+            }
+        );
+    }
+}
 
 function LogoutController($scope, $rootScope, $log, $auth, $window, $uibModal, $state, api, noty)
 {
