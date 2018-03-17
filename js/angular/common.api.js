@@ -17,7 +17,7 @@ function RestApiService($http, $q, $auth, $log, $httpParamSerializerJQLike) {
         login: 'login',
         tokens: 'tokens',
         logout: 'logout',
-        recover: 'recover',
+        reset: 'reset',
         admin: 'verifyadmin',
         queue: 'queue'
     };
@@ -65,7 +65,7 @@ function RestApiService($http, $q, $auth, $log, $httpParamSerializerJQLike) {
             currentUrl = self.AUTH_URL + endpoint;
         else if (endpoint == self.endpoints.logout)
             currentUrl = self.AUTH_URL + endpoint;
-        else if (endpoint == self.endpoints.recover)
+        else if (endpoint == self.endpoints.reset)
             currentUrl = self.AUTH_URL + endpoint;
 //////////////////////////////
 

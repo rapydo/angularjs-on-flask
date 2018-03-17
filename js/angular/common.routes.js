@@ -209,22 +209,22 @@ function routeConfig(
                 }
             }
         },
-        "public.recoverpwd": {
-            url: "/recover",
+        "public.resetpwd": {
+            url: "/reset",
             views: {
                 "unlogged": {
                     dir: "base",
-                    templateUrl: 'recover_password.html'
+                    templateUrl: 'reset_password.html'
                 }
             }
         },
 
-        "public.recoverpwd.verify": {
+        "public.resetpwd.verify": {
             url: "/:token",
             views: {
                 "unlogged": {
                     dir: "base",
-                    templateUrl: 'recover_password.html'
+                    templateUrl: 'reset_password.html'
                 }
             }
         },

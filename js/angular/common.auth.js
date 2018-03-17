@@ -6,7 +6,7 @@ angular.module('web')
 .controller('LoginController', LoginController)
 .controller('RegisterController', RegisterController)
 .controller('LogoutController', LogoutController)
-.controller('RecoverController', RecoverController)
+.controller('PwdResetController', PwdResetController)
 
 .config(function($authProvider) {
 
@@ -44,7 +44,7 @@ function LoginController($scope, $log, $window,
         self.askTOTP = false;
         // allowRegistration is defined in common.globals.js and overriding in routing.extra.js
         self.allowRegistration = allowRegistration;
-        self.allowPasswordRecovery = allowPasswordRecovery;
+        self.allowPasswordReset = allowPasswordReset;
         self.userMessage = null;
         self.qr_code = null;
 
@@ -233,7 +233,7 @@ function RegisterController($scope, $log, $auth, api, noty)
     }
 }
 
-function RecoverController(
+function PwdResetController(
     $scope, $timeout, $state, $log, $auth, $stateParams, api, noty) {
     // Init controller
     var self = this;
@@ -253,7 +253,7 @@ function RecoverController(
 
     if (token) {
 
-        api.apiCall(api.endpoints.recover, 'PUT', null, token).then(
+        api.apiCall(api.endpoints.reset, 'PUT', null, token).then(
             function(response) {
                 self.token = token
                 noty.extractErrors(response, noty.WARNING);
@@ -277,7 +277,7 @@ function RecoverController(
         data["new_password"] = self.newPwd;
         data["password_confirm"] = self.confirmPwd;
 
-        api.apiCall(api.endpoints.recover, 'PUT', data, self.token).then(
+        api.apiCall(api.endpoints.reset, 'PUT', data, self.token).then(
             function(out_data) {
                 self.newPwd = ""
                 self.confirmPwd = ""
@@ -294,17 +294,18 @@ function RecoverController(
 
 
     // Init the model
-    self.recover_email = null;
+    self.reset_email = null;
+    self.reset_message = null;
 
     self.request = function()
     {
-        if (self.recover_email == null)
+        if (self.reset_email == null)
             return false;
 
-        $log.debug("Requested recover:", self.recover_email);
-        var data = {"recover_email": self.recover_email};
-        api.apiCall(api.endpoints.recover, 'POST', data).then(
+        var data = {"reset_email": self.reset_email};
+        api.apiCall(api.endpoints.reset, 'POST', data).then(
             function(response) {
+                self.reset_message = response.data;
                 noty.extractErrors(response, noty.WARNING);
             },
             function(out_data) {
