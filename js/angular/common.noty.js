@@ -29,6 +29,10 @@ function NotyService() {
 		if (messages)
 		for (var i=0; i<messages.length; i++) {
 		    var message = messages[i];
+
+		    if (message.message) {
+		    	message = message.message;
+		    }
 		    // var label = Object.keys(message).pop();
 		    // var text = message[label];
 
