@@ -6,6 +6,7 @@ angular.module('web')
 .controller('LoginController', LoginController)
 .controller('RegisterController', RegisterController)
 .controller('LogoutController', LogoutController)
+.controller('PwdResetController', PwdResetController)
 
 .config(function($authProvider) {
 
@@ -43,6 +44,7 @@ function LoginController($scope, $log, $window,
         self.askTOTP = false;
         // allowRegistration is defined in common.globals.js and overriding in routing.extra.js
         self.allowRegistration = allowRegistration;
+        self.allowPasswordReset = allowPasswordReset;
         self.userMessage = null;
         self.qr_code = null;
 
@@ -231,6 +233,87 @@ function RegisterController($scope, $log, $auth, api, noty)
     }
 }
 
+function PwdResetController(
+    $scope, $timeout, $state, $log, $auth, $stateParams, api, noty) {
+    // Init controller
+    var self = this;
+
+    // Skip if already logged
+    if ($auth.isAuthenticated())
+    {
+        $timeout(function () {
+            $log.debug("Already logged");
+            $state.go(loggedLandingPage);
+        });
+
+        return
+    }
+
+    var token = $stateParams.token;
+
+    if (token) {
+
+        api.apiCall(api.endpoints.reset, 'PUT', null, token).then(
+            function(response) {
+                self.token = token
+                noty.extractErrors(response, noty.WARNING);
+            },
+            function(out_data) {
+                self.token = undefined
+                self.invalid_token = out_data.errors[0];
+            }
+        );
+
+
+    }
+    self.changePassword = function() {
+
+        if (self.newPwd != self.confirmPwd) {
+            noty.showError("New password does not match with confirmation");
+            return false;
+        }
+
+        var data = {}
+        data["new_password"] = self.newPwd;
+        data["password_confirm"] = self.confirmPwd;
+
+        api.apiCall(api.endpoints.reset, 'PUT', data, self.token).then(
+            function(out_data) {
+                self.newPwd = ""
+                self.confirmPwd = ""
+                noty.showSuccess("Password successfully changed. Please login with your new password")
+                $state.go("public.login");
+                return true;
+            },
+            function(out_data) {
+                noty.extractErrors(out_data, noty.ERROR);
+                return false;
+            }
+        );
+    };
+
+
+    // Init the model
+    self.reset_email = null;
+    self.reset_message = null;
+
+    self.request = function()
+    {
+        if (self.reset_email == null)
+            return false;
+
+        var data = {"reset_email": self.reset_email};
+        api.apiCall(api.endpoints.reset, 'POST', data).then(
+            function(response) {
+                self.reset_message = response.data;
+                noty.extractErrors(response, noty.WARNING);
+            },
+            function(out_data) {
+                noty.extractErrors(out_data, noty.ERROR);
+            }
+        );
+    }
+}
 
 function LogoutController($scope, $rootScope, $log, $auth, $window, $uibModal, $state, api, noty)
 {

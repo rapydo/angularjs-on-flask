@@ -18,11 +18,21 @@ function NotyService() {
 		if (response)
 			if (response.errors)
 				return self.showAll(response.errors, type);
+		if (response)
+			if (response.data)
+				if (response.data.Response)
+					if (response.data.Response.errors)
+						return self.showAll(response.data.Response.errors, type);
+
 	}
 	self.showAll = function(messages, type) {
 		if (messages)
 		for (var i=0; i<messages.length; i++) {
 		    var message = messages[i];
+
+		    if (message.message) {
+		    	message = message.message;
+		    }
 		    // var label = Object.keys(message).pop();
 		    // var text = message[label];
 

@@ -13,6 +13,7 @@ var blueprintTemplateDir = templateDirBase + 'custom/';
 var loggedLandingPage = "logged.profile";
 var defaultPage = "public.welcome";
 var allowRegistration = false;
+var allowPasswordReset = true;
 
 ////////////////////////////
 // HISTORY GLOBAL OBJECT

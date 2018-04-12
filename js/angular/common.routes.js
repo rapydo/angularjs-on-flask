@@ -199,13 +199,31 @@ function routeConfig(
             }
         },
 
-        // To log the user in
         "public.register": {
             url: "/register",
             views: {
                 "unlogged": {
                     dir: "base",
                     templateUrl: 'registration.html'
+                }
+            }
+        },
+        "public.resetpwd": {
+            url: "/reset",
+            views: {
+                "unlogged": {
+                    dir: "base",
+                    templateUrl: 'reset_password.html'
+                }
+            }
+        },
+
+        "public.resetpwd.verify": {
+            url: "/:token",
+            views: {
+                "unlogged": {
+                    dir: "base",
+                    templateUrl: 'reset_password.html'
                 }
             }
         },
