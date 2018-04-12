@@ -11,6 +11,7 @@ var blueprintTemplateDir = templateDirBase + 'custom/';
 
 // var loggedLandingPage = "public.welcome";
 var loggedLandingPage = "logged.profile";
+var defaultPage = "public.welcome";
 var allowRegistration = false;
 
 ////////////////////////////

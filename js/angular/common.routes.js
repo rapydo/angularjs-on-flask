@@ -1,8 +1,7 @@
 (function() {
   'use strict';
 
-angular.module('web')
-    .config(routeConfig);
+angular.module('web').config(routeConfig);
 
 /////////////////////////////////
 // ROUTES AND AUTHENTICATION
@@ -304,7 +303,8 @@ function routeConfig(
     $urlRouterProvider.otherwise(function ($injector) {
         var $state = $injector.get('$state');
         //return $state.go('login');
-        return $state.go('public.welcome');
+
+        return $state.go(defaultPage);
         // console.log("TEST");
         // return $state.go('logged.profile');
     });
